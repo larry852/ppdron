@@ -20,7 +20,7 @@ OS_PATH = ''
 LOG_FILE = OS_PATH + '/log_temp'
 
 # WiFi Target
-TARGET_ESSID = None
+TARGET_ESSID = 'LARRY'
 TARGET_KEY = None
 TARGET_BSSID = None
 TARGET_CHANNEL = None
