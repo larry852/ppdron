@@ -114,7 +114,7 @@ def main():
 		settings.TARGET_CHANNEL = ap_target.get('channel').strip()
 		settings.TARGET_PRIVACY = ap_target.get('Privacy').strip()
 
-		info('Target selected: ' + settings.TARGET_ESSID + ' Channel: ' + settings.TARGET_CHANNEL)
+		info('Target selected: ' + settings.TARGET_ESSID + ' Channel: ' + settings.TARGET_CHANNEL + 'Privacy: ' + settings.TARGET_PRIVACY)
 
 		if settings.TARGET_PRIVACY == 'WEP':
 			info('Cracking {e} access point with WEP privacy...'.format(e=settings.TARGET_ESSID))
