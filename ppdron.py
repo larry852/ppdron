@@ -134,7 +134,7 @@ def main():
 					error('Key not found! :-(')
 					exit(0)
 
-		elif settings.TARGET_PRIVACY == 'WPA' or settings.TARGET_PRIVACY == 'WPA2' or settings.TARGET_PRIVACY == 'WPA2WPA':
+		elif settings.TARGET_PRIVACY == 'WPA' or settings.TARGET_PRIVACY == 'WPA2' or settings.TARGET_PRIVACY == 'WPA2WPA' or settings.TARGET_PRIVACY == 'WPA2 WPA':
 			info('Cracking {e} access point with {p} privacy...'.format(e=settings.TARGET_ESSID, p=settings.TARGET_PRIVACY))
 
 			wps = wash.wash_scan()
