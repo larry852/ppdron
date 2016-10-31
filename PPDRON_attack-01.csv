@@ -1,0 +1,10 @@
+
+BSSID, First time seen, Last time seen, channel, Speed, Privacy, Cipher, Authentication, Power, # beacons, # IV, LAN IP, ID-length, ESSID, Key
+80:C6:AB:5F:91:B4, 2016-10-30 20:10:56, 2016-10-30 20:26:10, 11,  54, WPA2, CCMP TKIP,PSK, -51,     6233,    53465,   0.  0.  0.  0,  17, FAMILIA VELANDIA , 
+
+Station MAC, First time seen, Last time seen, Power, # packets, BSSID, Probed ESSIDs
+00:08:22:BE:DC:FB, 2016-10-30 20:16:10, 2016-10-30 20:26:06, -45,     9754, 80:C6:AB:5F:91:B4,
+A0:CB:FD:FC:D2:18, 2016-10-30 20:11:00, 2016-10-30 20:26:08, -63,     2140, 80:C6:AB:5F:91:B4,
+EC:CB:30:FE:03:E3, 2016-10-30 20:10:58, 2016-10-30 20:26:03, -63,     2386, 80:C6:AB:5F:91:B4,
+D0:53:49:40:F3:41, 2016-10-30 20:10:56, 2016-10-30 20:26:10, -28,    40148, 80:C6:AB:5F:91:B4, FAMILIA VELANDIA 
+

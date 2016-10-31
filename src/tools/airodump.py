@@ -5,6 +5,7 @@ import pexpect
 import src.settings as settings
 
 from poormanslogging import info, warn, error
+import src.utils.report as report
 
 def scan_targets():
 	"""
@@ -17,6 +18,7 @@ def scan_targets():
 	:param essid: If supplied, it gets the airodump information for this particular ESSID
 	"""
 	info("Scanning {t} seconds for target WiFi access points...".format(t=settings.AIRODUMP_SCAN_TIME))
+	report.save("Scanning {t} seconds for target WiFi access points...".format(t=settings.AIRODUMP_SCAN_TIME))
 	#  Delete old files:
 	if os.path.exists(os.path.join(settings.OS_PATH,'PPDRON-01.csv')):
 		os.remove(os.path.join(settings.OS_PATH,'PPDRON-01.csv'))
@@ -43,6 +45,7 @@ def scan_targets():
 				break
 		if len(aps) == 0:
 			error("No WiFi networks in range! Nothing we can do.")
+			report.save("No WiFi networks in range! Nothing we can do.")
 			exit(1)
 		if settings.TARGET_ESSID is None:
 			for ap in aps:
@@ -61,4 +64,5 @@ def scan_targets():
 				return ap_defined
 			else:
 				error("AP Target not found! Ending...")
+				report.save("AP Target not found! Ending...")
 				exit(1)

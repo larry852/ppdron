@@ -1,12 +1,4 @@
 #!/usr/bin/env python3
-"""
---------------------------------------------------------------------------------
-	CROZONO - 22.02.16.20.00.00 - www.crozono.com - info@crozono.com
-
-	Tool - Wash is used by CROZONO to discover APs with WPS.
---------------------------------------------------------------------------------
-
-"""
 import os
 import pexpect
 

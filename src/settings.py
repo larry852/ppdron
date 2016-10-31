@@ -11,7 +11,7 @@ DELAY = 0
 
 # Interface to be used across functions.
 # Meant to be set only once.
-INTERFACE = None
+INTERFACE = 'wlan1'
 INTERFACE_MON = None
 NEW_MAC = None
 
@@ -20,7 +20,7 @@ OS_PATH = ''
 LOG_FILE = OS_PATH + '/log_temp'
 
 # WiFi Target
-TARGET_ESSID = 'LARRY'
+TARGET_ESSID = None
 TARGET_KEY = None
 TARGET_BSSID = None
 TARGET_CHANNEL = None
