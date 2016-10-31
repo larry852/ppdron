@@ -13,10 +13,11 @@ import src.tools.airodump as airodump
 import src.utils.sys_check as checks
 import src.utils.lan_manager as lan_mgr
 import src.utils.device_manager as device_mgr
-import src.utils.report as report
+
 
 from os import listdir
 from poormanslogging import info, warn, error
+import src.utils.report as report
 
 def import_module(module):
 	p = re.compile('class (.+)\({}\):'.format('BaseAttack'))
@@ -73,7 +74,10 @@ def banner():
 	Andrea Velandia - Analista - Tester
 	Larry Portocarrero - Diseñador - Programador
 	'''
-	report.save(b)
+	report.saveLog('PPDRON')
+	report.saveLog('Diego Sierra - Gerente - SQA')
+	report.saveLog('Andrea Velandia - Analista - Tester')
+	report.saveLog('Larry Portocarrero - Diseñador - Programador')
 	print(b)
 
 def main():
@@ -81,7 +85,7 @@ def main():
 
 	if not checks.check_root():
 		error('You need root privileges to run PPDRON!\n')
-		report.save('You need root privileges to run PPDRON!\n')
+		report.saveLog('You need root privileges to run PPDRON!\n')
 		exit(1)
 
 	if not checks.check_wlan_tools_dependencies():
@@ -98,7 +102,7 @@ def main():
 
 	delay = float(settings.DELAY) * 60
 	time.sleep(delay)
-	report.save('PPDRON running...')
+	report.saveLog('PPDRON running...')
 	info('PPDRON running...')
 
 	if settings.TARGET_ESSID is not None:
@@ -119,11 +123,11 @@ def main():
 		settings.TARGET_PRIVACY = ap_target.get('Privacy').strip()
 
 		info('Target selected: ' + settings.TARGET_ESSID + ' Channel: ' + settings.TARGET_CHANNEL + ' Privacy: ' + settings.TARGET_PRIVACY)
-		report.save('Target selected: ' + settings.TARGET_ESSID + ' Channel: ' + settings.TARGET_CHANNEL + ' Privacy: ' + settings.TARGET_PRIVACY)
+		report.saveLog('Target selected: ' + settings.TARGET_ESSID + ' Channel: ' + settings.TARGET_CHANNEL + ' Privacy: ' + settings.TARGET_PRIVACY)
 
 		if settings.TARGET_PRIVACY == 'WEP':
 			info('Cracking {e} access point with WEP privacy...'.format(e=settings.TARGET_ESSID))
-			report.save('Cracking {e} access point with WEP privacy...'.format(e=settings.TARGET_ESSID))
+			report.saveLog('Cracking {e} access point with WEP privacy...'.format(e=settings.TARGET_ESSID))
 			wep_modules = find_modules('wep')
 			for wep_module in wep_modules:
 				attack = import_module(wep_module[0])
@@ -132,25 +136,25 @@ def main():
 					attack.run()
 					if settings.TARGET_KEY is not None:
 						info('Key found!: {k} '.format(k=settings.TARGET_KEY))
-						report.save('Key found!: {k} '.format(k=settings.TARGET_KEY))
+						report.saveLog('Key found!: {k} '.format(k=settings.TARGET_KEY))
 						lan_mgr.save_key()
 						break
 				else:
 					pass
 			if settings.TARGET_KEY is None:
 					error('Key not found! :-(')
-					report.save('Key found!: {k} '.format(k=settings.TARGET_KEY))
+					report.saveLog('Key found!: {k} '.format(k=settings.TARGET_KEY))
 					exit(0)
 
 		elif settings.TARGET_PRIVACY == 'WPA' or settings.TARGET_PRIVACY == 'WPA2' or settings.TARGET_PRIVACY == 'WPA2WPA' or settings.TARGET_PRIVACY == 'WPA2 WPA':
 			info('Cracking {e} access point with {p} privacy...'.format(e=settings.TARGET_ESSID, p=settings.TARGET_PRIVACY))
-			report.save('Cracking {e} access point with {p} privacy...'.format(e=settings.TARGET_ESSID, p=settings.TARGET_PRIVACY))
+			report.saveLog('Cracking {e} access point with {p} privacy...'.format(e=settings.TARGET_ESSID, p=settings.TARGET_PRIVACY))
 
 			wps = wash.wash_scan()
 
 			if wps:
 				info('WPS is enabled')
-				report.save('WPS is enabled')
+				report.saveLog('WPS is enabled')
 				wps_modules = find_modules('wps')
 				for wps_module in wps_modules:
 					attack = import_module(wps_module[0])
@@ -159,7 +163,7 @@ def main():
 						attack.run()
 						if settings.TARGET_KEY is not None:
 							info('Key found!: {k} '.format(k=settings.TARGET_KEY))
-							report.save('Key found!: {k} '.format(k=settings.TARGET_KEY))
+							report.saveLog('Key found!: {k} '.format(k=settings.TARGET_KEY))
 							break
 					else:
 						pass
@@ -167,7 +171,7 @@ def main():
 			if settings.TARGET_KEY is None:
 				if wps:
 					warn('PIN not found! :-( Running WPA/WPA2 attack modules...')
-					report.save('PIN not found! :-( Running WPA/WPA2 attack modules...')
+					report.saveLog('PIN not found! :-( Running WPA/WPA2 attack modules...')
 				wpa_modules = find_modules('wpa')
 				for wpa_module in wpa_modules:
 					attack = import_module(wpa_module[0])
@@ -176,22 +180,22 @@ def main():
 						attack.run()
 						if settings.TARGET_KEY is not None:
 							info('Key found!: {k} '.format(k=settings.TARGET_KEY))
-							report.save('Key found!: {k} '.format(k=settings.TARGET_KEY))
+							report.saveLog('Key found!: {k} '.format(k=settings.TARGET_KEY))
 							break
 					else:
 						pass
 
 			if settings.TARGET_KEY is None: # still...
 				error('Key not found! :-(')
-				report.save('Key not found! :-(')
+				report.saveLog('Key not found! :-(')
 				exit(0)
 			else:
 				lan_mgr.save_key()
 		else:
 			info('Open network!')
-			report.save('Key not found! :-(')
+			report.saveLog('Key not found! :-(')
 
 	info('PPDRON has finished! Good bye! ;)')
-	report.save('PPDRON has finished! Good bye! ;)')
+	report.saveLog('PPDRON has finished! Good bye! ;)')
 
 main()

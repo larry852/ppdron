@@ -25,7 +25,7 @@ def check_interfering_processes(kill=True):
 	_, err = s.communicate()
 	if err is not None:
 		error('Error when killing interfering processes!')
-		report.save('Error when killing interfering processes!')
+		report.saveLog('Error when killing interfering processes!')
 		return False
 	return True
 
@@ -41,13 +41,12 @@ def toggle_mode_monitor(setting=True):
 				return True
 			else:
 				error("Could not set interface in monitor mode!")
-				report.save("Could not set interface in monitor mode!")
+				report.saveLog("Could not set interface in monitor mode!")
 				exit(1)
 	else:
 		subprocess.call(['airmon-ng', 'stop', settings.INTERFACE_MON], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
 
 def get_ifaces():
-	"""Returns a list of interfaces (report.saveed by airmon-ng) prefixed by the 'prefix' keyword"""
 	ang = subprocess.Popen(['airmon-ng'], stdout=subprocess.PIPE)
 	sout, serr = ang.communicate()
 	i = list(filter(lambda x: x is not '' and not x.startswith("PHY"), sout.decode().split("\n")))
@@ -56,6 +55,6 @@ def get_ifaces():
 
 def hardware_setup():
 	info("Setting interface to monitor mode")
-	report.save("Setting interface to monitor mode")
+	report.saveLog("Setting interface to monitor mode")
 	toggle_mode_monitor(True)
 	mac_changer()

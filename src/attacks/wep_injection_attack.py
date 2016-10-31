@@ -10,6 +10,7 @@ import src.settings as settings
 from subprocess import Popen
 from poormanslogging import info, error, warn
 from src.attacks.base_attack import BaseAttack
+import src.utils.report as report
 
 class wep_injection(BaseAttack):
 
@@ -21,6 +22,7 @@ class wep_injection(BaseAttack):
 							stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
 
 		info("Running an association & packet injection attack")
+		report.saveLog("Running an association & packet injection attack")
 		cmd_auth = pexpect.spawn('aireplay-ng -1 0 -e "{0}" -a {1} -h {2} {3}'.format(settings.TARGET_ESSID, settings.TARGET_BSSID, settings.NEW_MAC, settings.INTERFACE_MON))
 		cmd_auth.logfile = open(settings.LOG_FILE, 'wb')
 		cmd_auth.expect(['Association successful', pexpect.TIMEOUT, pexpect.EOF], 20)
@@ -29,6 +31,7 @@ class wep_injection(BaseAttack):
 		for line in parse_log_auth:
 			if line.find('Association successful') != -1:
 				info("Association successful :-) injecting packets...")
+				report.saveLog("Association successful :-) injecting packets...")
 		parse_log_auth.close()
 		os.remove(settings.LOG_FILE)
 
@@ -59,6 +62,7 @@ class wep_injection(BaseAttack):
 		os.remove(settings.LOG_FILE)
 		if settings.TARGET_KEY is None:
 			warn("Attack failed!")
+			report.saveLog("Attack failed!")
 
 	def setup(self):
 		#  Delete old files:
@@ -72,6 +76,7 @@ class wep_injection(BaseAttack):
 		dep = 'aircrack-ng'
 		if subprocess.call(["which", dep],stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL) != 0:
 			error("Required binary for {bin} not found.".format(bin=dep))
+			report.saveLog("Required binary for {bin} not found.".format(bin=dep))
 			return False
 		else:
 			return True

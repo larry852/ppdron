@@ -8,6 +8,7 @@ import src.settings as settings
 import src.utils.device_manager as device_mgr
 
 from poormanslogging import info, warn, error
+import src.utils.report as report
 
 def get_gateway():
 	import struct
@@ -39,7 +40,7 @@ def get_current_essid():
 	sout, serr = gre.communicate()
 	if serr is not None:
 		error("Error getting the current ESSID")
-		report("Error getting the current ESSID")
+		report.saveLog("Error getting the current ESSID")
 		return ""
 	return sout.decode().strip().replace("\"", "")
 
@@ -57,7 +58,7 @@ def connect_to_lan():
 		nonlocal sock
 		nonlocal tries
 		info("Connecting to '{0}' with key '{1}'".format(settings.TARGET_ESSID, settings.TARGET_KEY if settings.TARGET_KEY is not None else ''))
-		report("Connecting to '{0}' with key '{1}'".format(settings.TARGET_ESSID, settings.TARGET_KEY if settings.TARGET_KEY is not None else ''))
+		report.saveLog("Connecting to '{0}' with key '{1}'".format(settings.TARGET_ESSID, settings.TARGET_KEY if settings.TARGET_KEY is not None else ''))
 
 		cmd_connect = pexpect.spawn('iwconfig {0} essid "{1}" key s:{2}'.format(settings.INTERFACE, settings.TARGET_ESSID, settings.TARGET_KEY))
 		cmd_connect.logfile = open(settings.LOG_FILE, 'wb')
@@ -91,15 +92,15 @@ def connect_to_lan():
 	do_connect()
 	if get_current_essid() != settings.TARGET_ESSID and tries < 5:
 		warn('Connection to {e} failed. Retrying.'.format(e=settings.TARGET_ESSID))
-		report('Connection to {e} failed. Retrying.'.format(e=settings.TARGET_ESSID))
+		report.saveLog('Connection to {e} failed. Retrying.'.format(e=settings.TARGET_ESSID))
 		do_connect()
 	if get_current_essid() == settings.TARGET_ESSID:
 		ipaddr = socket.inet_ntoa(
 				fcntl.ioctl(sock.fileno(), 0x8915, struct.pack('256s', bytes(settings.INTERFACE[:15], 'utf-8')))[20:24])
 		info('Connection to {e} succeeded! Our IP is: {i}'.format(e=settings.TARGET_ESSID, i=ipaddr))
-		report('Connection to {e} succeeded! Our IP is: {i}'.format(e=settings.TARGET_ESSID, i=ipaddr))
+		report.saveLog('Connection to {e} succeeded! Our IP is: {i}'.format(e=settings.TARGET_ESSID, i=ipaddr))
 		settings.IP_LAN = ipaddr.strip()
 	else:
 		error('Could not connect to {e} after 5 tries. Aborting'.format(e=settings.TARGET_ESSID))
-		report('Could not connect to {e} after 5 tries. Aborting'.format(e=settings.TARGET_ESSID))
+		report.saveLog('Could not connect to {e} after 5 tries. Aborting'.format(e=settings.TARGET_ESSID))
 		exit(1)

