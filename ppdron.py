@@ -66,6 +66,13 @@ def parse_args():
 	parser.add_argument('-D', '--delay', type=str, help='Time to wait before starting (minutes)')
 	return parser.parse_args()
 
+def generateReport():
+	report.TARGET_ESSID = settings.TARGET_ESSID
+	report.TARGET_CHANNEL = settings.TARGET_CHANNEL
+	report.TARGET_PRIVACY = settings.TARGET_PRIVACY
+	report.TARGET_KEY = settings.TARGET_KEY
+	report.generateReport()
+
 def banner():
 	global version
 	from pyfiglet import figlet_format
@@ -82,13 +89,17 @@ def banner():
 
 def main():
 	banner()
+	report.initLog()
+	report.initReport()
 
 	if not checks.check_root():
 		error('You need root privileges to run PPDRON!\n')
 		report.saveLog('You need root privileges to run PPDRON!\n')
+		generateReport()
 		exit(1)
 
 	if not checks.check_wlan_tools_dependencies():
+		generateReport()
 		exit(1)
 
 	args = parse_args()
@@ -126,6 +137,7 @@ def main():
 		report.saveLog('Target selected: ' + settings.TARGET_ESSID + ' Channel: ' + settings.TARGET_CHANNEL + ' Privacy: ' + settings.TARGET_PRIVACY)
 
 		if settings.TARGET_PRIVACY == 'WEP':
+			report.TARGET_ATTACK = 'Fuerza bruta'
 			info('Cracking {e} access point with WEP privacy...'.format(e=settings.TARGET_ESSID))
 			report.saveLog('Cracking {e} access point with WEP privacy...'.format(e=settings.TARGET_ESSID))
 			wep_modules = find_modules('wep')
@@ -144,6 +156,7 @@ def main():
 			if settings.TARGET_KEY is None:
 					error('Key not found! :-(')
 					report.saveLog('Key found!: {k} '.format(k=settings.TARGET_KEY))
+					generateReport()
 					exit(0)
 
 		elif settings.TARGET_PRIVACY == 'WPA' or settings.TARGET_PRIVACY == 'WPA2' or settings.TARGET_PRIVACY == 'WPA2WPA' or settings.TARGET_PRIVACY == 'WPA2 WPA':
@@ -162,6 +175,7 @@ def main():
 						attack.setup()
 						attack.run()
 						if settings.TARGET_KEY is not None:
+							report.TARGET_ATTACK = 'Ataque al WPS'
 							info('Key found!: {k} '.format(k=settings.TARGET_KEY))
 							report.saveLog('Key found!: {k} '.format(k=settings.TARGET_KEY))
 							break
@@ -181,6 +195,7 @@ def main():
 						if settings.TARGET_KEY is not None:
 							info('Key found!: {k} '.format(k=settings.TARGET_KEY))
 							report.saveLog('Key found!: {k} '.format(k=settings.TARGET_KEY))
+							report.TARGET_ATTACK = 'Ataque de diccionario'
 							break
 					else:
 						pass
@@ -188,14 +203,17 @@ def main():
 			if settings.TARGET_KEY is None: # still...
 				error('Key not found! :-(')
 				report.saveLog('Key not found! :-(')
+				generateReport()
 				exit(0)
 			else:
 				lan_mgr.save_key()
 		else:
 			info('Open network!')
-			report.saveLog('Key not found! :-(')
+			report.saveLog('Open network!')
+			report.TARGET_ATTACK = 'Ninguno'
 
 	info('PPDRON has finished! Good bye! ;)')
 	report.saveLog('PPDRON has finished! Good bye! ;)')
+	generateReport()
 
 main()
