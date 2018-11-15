@@ -1,2 +1,2 @@
 # PPDRON
-Pruebas de penetración mediante de drones.
+Pruebas de penetración con el uso de drones.
